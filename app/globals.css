@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap");
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    /* Azure Athletic palette */
+    --bg: #F7F9FE;            /* Fondo Principal */
+    --paper: #FFFFFF;         /* Blanco Puro · cards */
+    --paper-dim: #F1F4F9;     /* Superficie Container */
+    --ink: #181C20;           /* Texto Primario */
+    --line: rgba(24,28,32,0.10);
+    --line-strong: rgba(24,28,32,0.18);
+    --muted: #5C6066;         /* Texto Secundario */
+    --muted-2: rgba(24,28,32,0.45);
+    --lime: #1A73E8;          /* Azul Corporativo (acento principal) */
+    --lime-dim: #005DB6;      /* Azul Élite */
+    --brand-bright: #3176D2;  /* Azul Vibrante */
+    --azul-tenue: #E8F0FE;    /* Hover / chips suaves */
+    --warm: #5C6066;
+    --crimson: #E63946;
+    --display: 'Fraunces', serif;
+    --ui: 'Inter Tight', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--ui);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--paper-dim); }
+  ::-webkit-scrollbar-thumb { background: rgba(24,28,32,0.20); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(24,28,32,0.35); }
+
+  ::selection { background: var(--lime); color: #fff; }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: multiply;
+  }
+
+@media (max-width: 1024px) {
+    .hero-grid { grid-template-columns: 1fr !important; gap: 80px !important; }
+    .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 40px !important; }
+    .cc-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .cc-stats-grid > div { border-left: none !important; border-top: 1px solid var(--line); }
+    .ct-grid { grid-template-columns: 1fr !important; }
+    .ct-grid .ct-block { grid-column: span 1 !important; grid-row: auto !important; }
+    .bf-grid { grid-template-columns: 1fr !important; }
+    .bf-grid .bf-block { grid-column: span 1 !important; grid-row: auto !important; }
+    .wp-grid { grid-template-columns: 1fr !important; }
+    .wp-grid .wp-card { grid-column: 1 !important; }
+  }
+  @media (max-width: 640px) {
+    .hide-mobile { display: none !important; }
+    .footer-grid { grid-template-columns: 1fr !important; }
+    .cc-stats-grid { grid-template-columns: 1fr !important; }
+  }
