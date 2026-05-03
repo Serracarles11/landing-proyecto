@@ -45,15 +45,15 @@ function Header() {
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--lime)', marginLeft: 4, alignSelf: 'center' }} />
         </div>
         <nav style={{ display: 'flex', gap: 36, alignItems: 'center' }} className="hide-mobile">
-          {['Producto', 'Para clubes', 'Bienestar', 'Precios'].map(l => (
+          {['Producto', 'Para clubes', 'Bienestar'].map(l => (
             <a key={l} href="#" style={{ fontSize: 13, color: 'var(--muted)', textDecoration: 'none', letterSpacing: '-0.005em', fontWeight: 450, transition: 'color 0.2s' }}
                onMouseEnter={e => e.target.style.color = 'var(--ink)'}
                onMouseLeave={e => e.target.style.color = 'var(--muted)'}>{l}</a>
           ))}
         </nav>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          <a href="#" style={{ fontSize: 13, color: 'var(--ink)', textDecoration: 'none', fontWeight: 500 }} className="hide-mobile">Acceder</a>
-          <a href="#" className="btn-pill" style={{
+          <a href="https://carlesserra.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: 'var(--ink)', textDecoration: 'none', fontWeight: 500 }} className="hide-mobile">Acceder</a>
+          <a href="https://carlesserra.com" target="_blank" rel="noopener noreferrer" className="btn-pill" style={{
             background: 'var(--lime)', color: '#fff', padding: '9px 18px',
             borderRadius: 100, fontSize: 13, fontWeight: 600, textDecoration: 'none',
             display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -169,7 +169,7 @@ function Hero() {
 
           {/* CTAs */}
           <div className="hero-cta" style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap', marginBottom: 56 }}>
-            <PremiumButton primary>Empezar ahora</PremiumButton>
+            <PremiumButton primary href="https://carlesserra.com">Empezar ahora</PremiumButton>
             <PremiumButton>Ver demo (2 min)</PremiumButton>
           </div>
 
@@ -192,7 +192,7 @@ function Hero() {
         </div>
 
         {/* RIGHT: dashboard mockup with floating chips */}
-        <div style={{ position: 'relative', minHeight: 580 }}>
+        <div className="hero-mock-wrap" style={{ position: 'relative', minHeight: 580 }}>
           <div className="hero-mock" style={{ position: 'relative', zIndex: 2 }}>
             <DashboardMockup />
           </div>
@@ -261,17 +261,19 @@ function Hero() {
 // ─────────────────────────────────────────────────────────────────────────────
 // PREMIUM BUTTON
 // ─────────────────────────────────────────────────────────────────────────────
-function PremiumButton({ children, primary, onClick }) {
+function PremiumButton({ children, primary, onClick, href }) {
   const ref = useRef(null);
   const onEnter = e => gsap.to(e.currentTarget, { y: -2, duration: 0.3, ease: 'power2.out' });
   const onLeave = e => gsap.to(e.currentTarget, { y: 0, duration: 0.4, ease: 'power2.out' });
+  const Tag = href ? 'a' : 'button';
+  const linkProps = href ? { href, target: '_blank', rel: 'noopener noreferrer' } : { onClick };
   if (primary) {
     return (
-      <button ref={ref} onMouseEnter={onEnter} onMouseLeave={onLeave} onClick={onClick} style={{
+      <Tag ref={ref} onMouseEnter={onEnter} onMouseLeave={onLeave} {...linkProps} style={{
         background: 'var(--lime)', color: '#fff', border: 'none',
         padding: '15px 26px', borderRadius: 100, fontSize: 14, fontWeight: 600,
         cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '-0.01em',
-        display: 'inline-flex', alignItems: 'center', gap: 8,
+        display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none',
         boxShadow: '0 6px 24px rgba(26,115,232,0.30)',
       }}>
         {children}
@@ -279,157 +281,308 @@ function PremiumButton({ children, primary, onClick }) {
           width: 24, height: 24, borderRadius: '50%', background: 'var(--lime-dim)',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
         }}>{Icons.arrow(12)}</span>
-      </button>
+      </Tag>
     );
   }
   return (
-    <button ref={ref} onMouseEnter={onEnter} onMouseLeave={onLeave} onClick={onClick} style={{
+    <Tag ref={ref} onMouseEnter={onEnter} onMouseLeave={onLeave} {...linkProps} style={{
       background: 'transparent', color: 'var(--ink)',
       border: '1px solid var(--line-strong)',
       padding: '15px 24px', borderRadius: 100, fontSize: 14, fontWeight: 500,
       cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '-0.01em',
-      display: 'inline-flex', alignItems: 'center', gap: 8,
+      display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none',
       transition: 'border-color 0.3s',
     }}
     onMouseOver={e => e.currentTarget.style.borderColor = 'var(--lime)'}
     onMouseOut={e => e.currentTarget.style.borderColor = 'var(--line-strong)'}>
       {children}
-    </button>
+    </Tag>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DASHBOARD MOCKUP
+// DASHBOARD MOCKUP — réplica de la pantalla "BeProfesional / Home"
 // ─────────────────────────────────────────────────────────────────────────────
 function DashboardMockup() {
+  // Calendar layout for May 2026 (May 1 = Friday) — entrenamientos / partidos / hoy
+  const calendar = [
+    [{d:27,t:'train',count:3,prev:true},{d:28,t:'train'},{d:29,muted:true},{d:30,t:'train'},{d:1,t:'train'},{d:2,t:'match'},{d:3,today:true}],
+    [{d:4,t:'train'},{d:5,t:'train'},{d:6},{d:7,t:'train'},{d:8,t:'train'},{d:9,t:'match'},{d:10}],
+    [{d:11,t:'train'},{d:12,t:'train'},{d:13},{d:14,t:'train'},{d:15,t:'train'},{d:16},{d:17}],
+    [{d:18,t:'train'},{d:19,t:'train'},{d:20},{d:21,t:'train'},{d:22,t:'train'},{d:23},{d:24}],
+    [{d:25,t:'train'},{d:26,t:'train'},{d:27},{d:28,t:'train'},{d:29,t:'train'},{d:30},{d:31}],
+    [{d:1,t:'train',next:true},{d:2,t:'train',next:true},{d:3,next:true},{d:4,t:'train',next:true},{d:5,t:'train',next:true},{d:6,next:true},{d:7,next:true}],
+  ];
+
   return (
-    <div style={{
-      background: 'var(--paper)', border: '1px solid var(--line)',
+    <div className="dash-mock" style={{
+      background: '#F4F6FB', border: '1px solid var(--line)',
       borderRadius: 16, overflow: 'hidden',
       boxShadow: '0 24px 60px rgba(24,28,32,0.10), 0 0 0 1px rgba(24,28,32,0.04)',
-      display: 'grid', gridTemplateColumns: '64px 1fr', minHeight: 540,
+      display: 'grid', gridTemplateColumns: '108px 1fr 132px', minHeight: 560,
+      fontSize: 10,
     }}>
       {/* Sidebar */}
       <aside style={{
-        background: 'var(--paper-dim)', borderRight: '1px solid var(--line)',
-        padding: '16px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18,
+        background: '#F4F6FB', borderRight: '1px solid var(--line)',
+        padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 6,
       }}>
-        <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--lime)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--display)', fontWeight: 700, fontSize: 16 }}>b</div>
-        <div style={{ width: 32, height: 1, background: 'var(--line)' }} />
+        <div style={{ marginBottom: 6 }}>
+          <div style={{ fontWeight: 700, fontSize: 12, color: 'var(--lime)', letterSpacing: '-0.02em' }}>BeProfessional</div>
+          <div style={{ fontSize: 8, color: 'var(--muted-2)', marginTop: 1 }}>Sant Jordi Juvenil</div>
+        </div>
+
+        {/* Volver */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          padding: '6px 8px', borderRadius: 8, background: '#fff',
+          border: '1px solid var(--line)', color: 'var(--lime)', fontWeight: 600, fontSize: 9,
+        }}>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Volver
+        </div>
+
         {[
-          {active: true, d: 'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z'},
-          {d: 'M16 11V3H8v8H2l10 11 10-11h-6z'},
-          {d: 'M12 4l8 5v11H4V9l8-5z'},
-          {d: 'M3 12h2l3-8 4 16 3-8h6'},
-          {d: 'M5 3a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2H5z'},
-        ].map((item, i) => (
-          <div key={i} style={{
-            width: 36, height: 36, borderRadius: 8,
-            background: item.active ? 'var(--azul-tenue)' : 'transparent',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            position: 'relative',
+          {label:'Home', active:true, d:'M3 9l9-7 9 7v11a2 2 0 01-2 2h-4v-7h-6v7H5a2 2 0 01-2-2z'},
+          {label:'Players', d:'M16 11a3 3 0 100-6 3 3 0 000 6zM8 11a3 3 0 100-6 3 3 0 000 6zM2 20c0-3 2.5-5 6-5s6 2 6 5'},
+          {label:'Partidos', d:'M8 2v4M16 2v4M3 9h18M5 5h14a2 2 0 012 2v13a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z'},
+          {label:'Chats', d:'M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8z'},
+          {label:'Estadisticas', d:'M3 3v18h18M7 14l4-4 4 4 5-5'},
+          {label:'Play Maker', d:'M5 3l14 9-14 9V3z'},
+          {label:'Codigos', d:'M16 18l6-6-6-6M8 6l-6 6 6 6'},
+          {label:'Settings', d:'M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z'},
+        ].map(it => (
+          <div key={it.label} style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            padding: '5px 8px', borderRadius: 8,
+            background: it.active ? '#fff' : 'transparent',
+            border: it.active ? '1px solid var(--line)' : '1px solid transparent',
+            color: it.active ? 'var(--ink)' : 'var(--muted)',
+            fontSize: 9, fontWeight: it.active ? 600 : 500,
           }}>
-            {item.active && <span style={{ position: 'absolute', left: -16, top: '50%', width: 3, height: 16, background: 'var(--lime)', transform: 'translateY(-50%)', borderRadius: 2 }} />}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={item.active ? 'var(--lime)' : 'var(--muted-2)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d={item.d}/>
-            </svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d={it.d}/></svg>
+            {it.label}
           </div>
         ))}
+
+        {/* Notificaciones card */}
+        <div style={{
+          marginTop: 'auto', background: '#fff', border: '1px solid var(--line)', borderRadius: 10,
+          padding: '8px 9px',
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+            <div style={{ fontSize: 7, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Notif.</div>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--lime)' }} />
+          </div>
+          <div style={{ fontSize: 9, fontWeight: 600, marginBottom: 6 }}>14 sin leer</div>
+          <div style={{ borderTop: '1px solid var(--line)', paddingTop: 5 }}>
+            <div style={{ fontSize: 8, fontWeight: 600, color: 'var(--ink)' }}>Nuevo partido</div>
+            <div style={{ fontSize: 7, color: 'var(--muted-2)', lineHeight: 1.3, marginTop: 1 }}>Entrenador añadió UD Ibiza…</div>
+          </div>
+        </div>
       </aside>
 
       {/* Main */}
-      <div style={{ padding: '16px 18px' }}>
-        {/* Topbar */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid var(--line)' }}>
+      <div style={{ padding: '14px 16px', background: '#fff', overflow: 'hidden' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
           <div>
-            <div style={{ fontFamily: 'var(--mono)', fontSize: 9, color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Club / Vista general</div>
-            <div style={{ fontFamily: 'var(--display)', fontSize: 18, fontWeight: 500, letterSpacing: '-0.02em', marginTop: 2 }}>Temporada 25/26</div>
+            <div style={{ fontFamily: 'var(--display)', fontSize: 22, fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1 }}>BeProfesional</div>
+            <div style={{ fontSize: 9, color: 'var(--muted)', marginTop: 4 }}>Sesión de entrenamiento programada para las 05:00 p. m.</div>
+            <div style={{ fontFamily: 'var(--mono)', fontSize: 8, color: 'var(--lime)', marginTop: 4, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Entrenador</div>
           </div>
-          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-            <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg,#1A73E8,#3176D2)', border: '2px solid #fff' }} />
-            <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg,#005DB6,#1A73E8)', border: '2px solid #fff', marginLeft: -8 }} />
-            <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg,#3176D2,#005DB6)', border: '2px solid #fff', marginLeft: -8 }} />
-            <div style={{ fontSize: 11, color: 'var(--muted)', marginLeft: 4 }}>+5</div>
-          </div>
+          <div style={{
+            padding: '4px 10px', borderRadius: 100, background: 'var(--azul-tenue)',
+            color: 'var(--lime)', fontSize: 9, fontWeight: 600,
+          }}>2025/2026</div>
         </div>
 
-        {/* Metric grid 3x */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 14 }}>
+        {/* Metric cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 12 }}>
           {[
-            { label: 'Equipos', val: '12', mono: true },
-            { label: 'Jugadores', val: '248', mono: true },
-            { label: 'Carga', val: '64%', accent: true },
+            { icon: 'M9 9a3 3 0 116 0c0 1.5-1 2-2 3-1 .5-1 1.5-1 2M12 17h.01', label: 'Estado mental', val: '80%', sub: 'Promedio del estado mental' },
+            { icon: 'M12 6v6l4 2M12 22a10 10 0 100-20 10 10 0 000 20z', label: 'Fatiga', val: '70%', sub: 'Promedio de fatiga reportada' },
+            { icon: 'M16 11a3 3 0 100-6 3 3 0 000 6zM8 11a3 3 0 100-6 3 3 0 000 6zM2 20c0-3 2.5-5 6-5s6 2 6 5', label: 'Disponibilidad', val: '8%', sub: 'Jugadores asistirán hoy' },
           ].map(m => (
             <div key={m.label} style={{
-              padding: '10px 12px', borderRadius: 10,
-              background: m.accent ? 'var(--azul-tenue)' : 'var(--paper-dim)',
-              border: `1px solid ${m.accent ? 'rgba(26,115,232,0.20)' : 'var(--line)'}`,
+              background: '#fff', border: '1px solid var(--line)', borderRadius: 10,
+              padding: '10px 11px',
             }}>
-              <div style={{ fontSize: 9, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{m.label}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={m.icon}/></svg>
+                <span style={{ fontSize: 7, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{m.label}</span>
+              </div>
+              <div style={{ fontFamily: 'var(--display)', fontSize: 24, fontWeight: 600, color: 'var(--lime)', letterSpacing: '-0.04em', lineHeight: 1 }}>{m.val}</div>
+              <div style={{ fontSize: 7, color: 'var(--muted-2)', marginTop: 4, lineHeight: 1.3 }}>{m.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Planificacion card */}
+        <div style={{
+          background: '#fff', border: '1px solid var(--line)', borderRadius: 12,
+          padding: '12px 14px',
+        }}>
+          {/* Card header */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 10 }}>
+            <div style={{
+              width: 22, height: 22, borderRadius: '50%', background: 'var(--lime)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 7, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Planificación</div>
+              <div style={{ fontFamily: 'var(--display)', fontSize: 14, fontWeight: 600, letterSpacing: '-0.02em', marginTop: 1 }}>Calendario del equipo</div>
+              <div style={{ fontSize: 8, color: 'var(--muted)', marginTop: 2 }}>Visualiza entrenamientos y partidos.</div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 7, color: 'var(--lime)', fontWeight: 600 }}>Domingo, 3 de mayo</div>
+              <div style={{ display: 'flex', gap: 4, marginTop: 4, justifyContent: 'flex-end' }}>
+                <div style={{ background: 'var(--lime)', color: '#fff', fontSize: 8, fontWeight: 600, padding: '3px 8px', borderRadius: 100 }}>+ Añadir</div>
+                <div style={{ background: '#fff', border: '1px solid var(--line)', color: 'var(--ink)', fontSize: 8, fontWeight: 600, padding: '3px 8px', borderRadius: 100 }}>FIJOS</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Two-column: calendar + eventos */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 10 }}>
+            {/* Calendar */}
+            <div style={{ border: '1px solid var(--line)', borderRadius: 8, padding: '8px 10px', background: '#fff' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <span style={{ fontSize: 9, color: 'var(--muted)' }}>‹</span>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: 7, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Mes actual</div>
+                  <div style={{ fontFamily: 'var(--display)', fontSize: 12, fontWeight: 600, letterSpacing: '-0.02em' }}>Mayo De 2026</div>
+                </div>
+                <span style={{ fontSize: 9, color: 'var(--muted)' }}>›</span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2, fontSize: 6 }}>
+                {['LUN','MAR','MIE','JUE','VIE','SAB','DOM'].map(d => (
+                  <div key={d} style={{ textAlign: 'center', color: 'var(--muted-2)', fontFamily: 'var(--mono)', letterSpacing: '0.04em', padding: '2px 0' }}>{d}</div>
+                ))}
+                {calendar.flat().map((c, i) => {
+                  const isMatch = c.t === 'match';
+                  const isTrain = c.t === 'train';
+                  const isToday = c.today;
+                  const dim = c.muted || c.next;
+                  return (
+                    <div key={i} style={{
+                      aspectRatio: '1',
+                      border: isMatch ? '1.5px solid #FB923C' : isToday ? 'none' : '1px solid var(--line)',
+                      borderRadius: 4,
+                      background: isToday ? 'var(--lime)' : '#fff',
+                      color: isToday ? '#fff' : dim ? 'var(--muted-2)' : 'var(--ink)',
+                      opacity: dim ? 0.45 : 1,
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 8, fontWeight: 600, position: 'relative',
+                    }}>
+                      {c.d}
+                      {(isTrain || isMatch) && !isToday && (
+                        <div style={{ display: 'flex', gap: 1, position: 'absolute', bottom: 2 }}>
+                          <span style={{ width: 3, height: 3, borderRadius: '50%', background: isMatch ? '#FB923C' : 'var(--lime)' }} />
+                          {c.count > 1 && <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--lime)' }} />}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ display: 'flex', gap: 10, marginTop: 6, fontSize: 7, color: 'var(--muted-2)' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--lime)' }} />Entrenamientos</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: '#FB923C' }} />Partidos</span>
+              </div>
+            </div>
+
+            {/* Eventos del día */}
+            <div style={{ border: '1px solid var(--line)', borderRadius: 8, padding: '8px 10px', background: '#fff' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <div>
+                  <div style={{ fontSize: 7, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Eventos del día</div>
+                  <div style={{ fontFamily: 'var(--display)', fontSize: 11, fontWeight: 600, letterSpacing: '-0.02em', marginTop: 1 }}>Domingo, 3 de mayo</div>
+                </div>
+                <div style={{ fontSize: 7, color: 'var(--lime)', background: 'var(--azul-tenue)', padding: '2px 6px', borderRadius: 100, fontWeight: 600 }}>1 evento</div>
+              </div>
               <div style={{
-                fontFamily: m.mono ? 'var(--mono)' : 'var(--display)',
-                fontSize: 22, fontWeight: m.mono ? 500 : 600,
-                color: m.accent ? 'var(--lime)' : 'var(--ink)',
-                letterSpacing: '-0.03em', marginTop: 2,
-              }}>{m.val}</div>
+                background: 'var(--paper-dim)', border: '1px solid var(--line)', borderRadius: 6,
+                padding: '8px 10px', marginTop: 6,
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                  <span style={{ fontSize: 7, fontFamily: 'var(--mono)', color: '#FB923C', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Partido</span>
+                  <span style={{ fontSize: 9, fontFamily: 'var(--mono)', fontWeight: 600 }}>18:00</span>
+                </div>
+                <div style={{ fontSize: 11, fontWeight: 600, marginBottom: 6, letterSpacing: '-0.01em' }}>Partido vs Cosas</div>
+                <div style={{ display: 'flex', gap: 10, fontSize: 7, color: 'var(--muted)' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-7 8-12a8 8 0 10-16 0c0 5 8 12 8 12z"/></svg>
+                    cosas
+                  </span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/></svg>
+                    Modalidad CASA
+                  </span>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
-
-        {/* Mini chart card */}
-        <div style={{
-          background: 'var(--paper-dim)', border: '1px solid var(--line)',
-          borderRadius: 10, padding: '12px 14px', marginBottom: 14,
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
-            <div>
-              <div style={{ fontSize: 9, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Carga · 14 días</div>
-              <div style={{ fontFamily: 'var(--display)', fontSize: 14, fontWeight: 500, marginTop: 2 }}>Tendencia descendente</div>
-            </div>
-            <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--lime)' }}>−4.2%</span>
           </div>
-          {/* Chart */}
-          <svg width="100%" height="56" viewBox="0 0 280 56" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1A73E8" stopOpacity="0.3"/>
-                <stop offset="100%" stopColor="#1A73E8" stopOpacity="0"/>
-              </linearGradient>
-            </defs>
-            <path d="M0 38 L 25 32 L 50 36 L 75 28 L 100 30 L 125 22 L 150 26 L 175 18 L 200 24 L 225 16 L 250 20 L 280 12 L 280 56 L 0 56 Z" fill="url(#g1)"/>
-            <path d="M0 38 L 25 32 L 50 36 L 75 28 L 100 30 L 125 22 L 150 26 L 175 18 L 200 24 L 225 16 L 250 20 L 280 12" fill="none" stroke="var(--lime)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            {[25,75,125,175,225].map((x,i) => <circle key={i} cx={x} cy={[32,28,22,18,16][i]} r="2" fill="var(--lime)"/>)}
-          </svg>
-        </div>
-
-        {/* Player table */}
-        <div style={{
-          background: 'var(--paper-dim)', border: '1px solid var(--line)',
-          borderRadius: 10, padding: '10px 12px',
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <div style={{ fontSize: 9, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Jugadores · Hoy</div>
-            <span style={{ fontSize: 9, color: 'var(--muted-2)' }}>4 / 248</span>
-          </div>
-          {[
-            { n: 'M. García', team: 'JuvA', rpe: 6, status: 'ok' },
-            { n: 'J. López',  team: 'Sen',  rpe: 8, status: 'warn' },
-            { n: 'A. Martín', team: 'Cad',  rpe: 5, status: 'ok' },
-            { n: 'D. Ruiz',   team: 'JuvB', rpe: 7, status: 'ok' },
-          ].map((p, i, a) => (
-            <div key={p.n} style={{
-              display: 'grid', gridTemplateColumns: '1fr auto auto auto', gap: 10, alignItems: 'center',
-              padding: '6px 0',
-              borderBottom: i < a.length - 1 ? '1px solid rgba(24,28,32,0.06)' : 'none',
-            }}>
-              <div style={{ fontSize: 12, color: 'var(--ink)', fontWeight: 500 }}>{p.n}</div>
-              <div style={{ fontFamily: 'var(--mono)', fontSize: 9, color: 'var(--muted-2)', padding: '2px 6px', border: '1px solid var(--line)', borderRadius: 4 }}>{p.team}</div>
-              <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--muted)' }}>RPE {p.rpe}</div>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: p.status === 'ok' ? 'var(--lime)' : 'var(--crimson)' }} />
-            </div>
-          ))}
         </div>
       </div>
+
+      {/* Right column — Perfil destacado */}
+      <aside style={{
+        background: '#F4F6FB', borderLeft: '1px solid var(--line)',
+        padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 8,
+      }}>
+        <div style={{ fontSize: 7, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Perfil destacado</div>
+        <div style={{ fontFamily: 'var(--display)', fontSize: 17, fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 0.95 }}>JOSE<br/>BORDALAS</div>
+        <div style={{ display: 'flex', gap: 4 }}>
+          <span style={{ fontSize: 6, fontWeight: 700, padding: '2px 5px', borderRadius: 4, background: '#FEF3C7', color: '#B45309', letterSpacing: '0.06em' }}>★ ELITE</span>
+          <span style={{ fontSize: 6, fontWeight: 600, padding: '2px 5px', borderRadius: 4, background: '#fff', border: '1px solid var(--line)', color: 'var(--muted)', letterSpacing: '0.06em' }}>SUB-21</span>
+        </div>
+
+        {/* Player photo card */}
+        <div style={{
+          aspectRatio: '0.85', borderRadius: 10, overflow: 'hidden', position: 'relative',
+          background: 'linear-gradient(160deg, #2C5F9E 0%, #1A4577 60%, #0F2D55 100%)',
+          border: '1px solid var(--line)',
+        }}>
+          {/* Stylized silhouette */}
+          <svg width="100%" height="100%" viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice" style={{ position: 'absolute', inset: 0 }}>
+            <circle cx="50" cy="38" r="18" fill="#E8C19A"/>
+            <path d="M50 56 C 30 60 18 75 18 95 L 18 120 L 82 120 L 82 95 C 82 75 70 60 50 56 Z" fill="#1A73E8"/>
+            <circle cx="42" cy="34" r="2.5" fill="#1A1A1A"/>
+            <circle cx="58" cy="34" r="2.5" fill="#1A1A1A"/>
+            <path d="M44 44 Q 50 48 56 44" stroke="#1A1A1A" strokeWidth="1" fill="none" strokeLinecap="round"/>
+            <rect x="40" y="28" width="20" height="2" fill="#1A1A1A"/>
+          </svg>
+          <div style={{ position: 'absolute', top: 6, right: 6, fontSize: 7, fontWeight: 700, color: '#fff', background: 'rgba(0,0,0,0.3)', padding: '1px 4px', borderRadius: 3 }}>JB</div>
+          <div style={{ position: 'absolute', bottom: 6, left: 6, right: 6, color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <div>
+              <div style={{ fontSize: 6, opacity: 0.75, textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--mono)' }}>Posición</div>
+              <div style={{ fontSize: 9, fontWeight: 700 }}>Entrenador</div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 6, opacity: 0.75, textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--mono)' }}>Partidos</div>
+              <div style={{ fontFamily: 'var(--display)', fontSize: 18, fontWeight: 700, lineHeight: 1 }}>0</div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ fontSize: 7, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: 4 }}>Rendimiento</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5 }}>
+          {[['Goles','43'],['G. Contra','5'],['Partidos','12'],['Victorias','5']].map(([l,v]) => (
+            <div key={l} style={{
+              background: '#fff', border: '1px solid var(--line)', borderRadius: 6,
+              padding: '6px 7px',
+            }}>
+              <div style={{ fontSize: 6, fontFamily: 'var(--mono)', color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{l}</div>
+              <div style={{ fontFamily: 'var(--display)', fontSize: 16, fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1, marginTop: 2 }}>{v}</div>
+            </div>
+          ))}
+        </div>
+      </aside>
     </div>
   );
 }
@@ -594,7 +747,7 @@ function ControlSection() {
           }}>
             <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>04 · Partidos</div>
             <h3 style={{ fontFamily: 'var(--display)', fontWeight: 500, fontSize: 26, letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: 18 }}>
-              Convocatorias & alineaciones
+              Convocatorias
             </h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 18, padding: '10px 0', borderTop: '1px solid var(--line)' }}>
               <div>
@@ -733,10 +886,10 @@ function RoleSwitcher() {
     }}>
       <div style={{ maxWidth: 1440, margin: '0 auto' }}>
         {/* Header */}
-        <div className="rs-header" style={{
+        <div className="rs-header hero-grid" style={{
           display: 'grid', gridTemplateColumns: '0.4fr 1fr', gap: 40, alignItems: 'end',
           marginBottom: 60, paddingBottom: 24, borderBottom: '1px solid var(--line)',
-        }} className="hero-grid">
+        }}>
           <div>
             <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
               [02] · Roles
@@ -943,7 +1096,7 @@ function ClubCommandCenter() {
   }, []);
 
   const teams = [
-    { n: 'Senior A', cat: 'Senior', players: 24, load: 78, alerts: 2, rec: 'Reducir carga' },
+    { n: 'Amateur', cat: 'Amateur', players: 24, load: 78, alerts: 2, rec: 'Reducir carga' },
     { n: 'Juvenil A', cat: 'Juvenil', players: 22, load: 64, alerts: 0, rec: '—' },
     { n: 'Juvenil B', cat: 'Juvenil', players: 21, load: 58, alerts: 1, rec: 'Revisar JL' },
     { n: 'Cadete A', cat: 'Cadete', players: 20, load: 52, alerts: 0, rec: '—' },
@@ -997,6 +1150,7 @@ function ClubCommandCenter() {
         </div>
 
         {/* Teams table */}
+        <div className="cc-table-wrap">
         <div className="cc-table" style={{
           background: 'var(--paper)', border: '1px solid var(--line)', borderRadius: 16,
           overflow: 'hidden',
@@ -1038,6 +1192,7 @@ function ClubCommandCenter() {
               <div style={{ fontSize: 13, color: 'var(--muted)' }}>{t.rec}</div>
             </div>
           ))}
+        </div>
         </div>
       </div>
     </section>
@@ -1213,7 +1368,7 @@ function CTA() {
           14 días gratis. Sin tarjeta. Setup en menos de 10 minutos. Empieza la próxima temporada con todo bajo control.
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <PremiumButton primary>Empezar ahora</PremiumButton>
+          <PremiumButton primary href="https://carlesserra.com">Empezar ahora</PremiumButton>
           <PremiumButton>Solicitar demo</PremiumButton>
         </div>
       </div>
