@@ -181,7 +181,7 @@ function Hero() {
             {[
               ['12+', 'equipos por club'],
               ['250+', 'jugadores activos'],
-              ['14d', 'gratis sin tarjeta'],
+              ['1', 'plataforma centralizada'],
             ].map(([k, v]) => (
               <div key={k}>
                 <div style={{ fontFamily: 'var(--mono)', fontSize: 22, fontWeight: 500, letterSpacing: '-0.04em' }}>{k}</div>
@@ -1365,7 +1365,7 @@ function CTA() {
           <span className="cta-line" style={{ display: 'block' }}>de tu club <span style={{ display: 'inline-block', width: 18, height: 18, borderRadius: '50%', background: 'var(--lime)', verticalAlign: 'middle' }}></span></span>
         </h2>
         <p style={{ fontSize: 18, color: 'var(--muted)', maxWidth: 540, margin: '0 auto 40px', lineHeight: 1.55 }}>
-          14 días gratis. Sin tarjeta. Setup en menos de 10 minutos. Empieza la próxima temporada con todo bajo control.
+          Setup en menos de 10 minutos. Empieza la próxima temporada con todo bajo control.
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
           <PremiumButton primary href="https://carlesserra.com">Empezar ahora</PremiumButton>
@@ -1398,7 +1398,7 @@ function Footer() {
             </p>
           </div>
           {[
-            { t: 'Producto', l: ['Funciones', 'Bienestar', 'Club Command', 'Precios'] },
+            { t: 'Producto', l: ['Funciones', 'Bienestar', 'Club Command', 'Roles'] },
             { t: 'Recursos', l: ['Documentación', 'Casos de éxito', 'Changelog', 'Estado'] },
             { t: 'Compañía', l: ['Sobre nosotros', 'Contacto', 'Privacidad', 'Términos'] },
           ].map(c => (
